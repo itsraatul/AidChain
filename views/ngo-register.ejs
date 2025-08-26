@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= pageTitle %></title>
+    <style>body { font-family: sans-serif; margin: 2em; }</style>
+</head>
+<body>
+    <h1><%= pageTitle %></h1>
+    <form action="/ngo-register" method="POST">
+        <label for="ngo_name">NGO Name:</label><br>
+        <input type="text" id="ngo_name" name="ngo_name" required><br>
+        <label for="project_name">Project Name:</label><br>
+        <input type="text" id="project_name" name="project_name" required><br>
+        <label for="target_amount">Target Amount (₹):</label><br>
+        <input type="number" id="target_amount" name="target_amount" required><br><br>
+        <button type="submit">Register Project</button>
+    </form>
+</body>
+</html>

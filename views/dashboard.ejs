@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= pageTitle %></title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; line-height: 1.6; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1em; }
+        th, td { padding: 12px; border: 1px solid #ccc; text-align: left; }
+        th { background-color: #f4f4f4; }
+        .timeline { display: flex; justify-content: space-between; margin-top: 1em; }
+        .timeline-item { text-align: center; font-size: 0.9em; color: #999; }
+        .timeline-item.active { font-weight: bold; color: #333; }
+        .timeline-bar { height: 4px; background-color: #eee; margin: 0 10px; flex-grow: 1; position: relative; top: 12px; }
+        .status-pending { color: orange; }
+        .status-allocated { color: #007bff; }
+        .status-released { color: purple; }
+        .status-distributed { color: teal; }
+        .status-confirmed { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Welcome, <%= donorName %>!</h1>
+    <p>This is your personal dashboard for tracking your pledges. </p>
+    <% if (pledges.length > 0) { %>
+        <h2>Your Pledges</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Pledge ID</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% pledges.forEach(pledge => { %>
+                    <tr>
+                        <td><%= pledge.pledgeId %></td>
+                        <td>₹<%= pledge.amount %></td>
+                        <td>
+                            <span class="status-<%= pledge.status %>">
+                                <%= pledge.status.charAt(0).toUpperCase() + pledge.status.slice(1) %>
+                            </span>
+                        </td>
+                        <td><%= new Date(pledge.created_at).toLocaleDateString() %></td>
+                        <td>
+                            <% if (pledge.status === 'pending') { %>
+                                <form action="/edit-pledge" method="POST">
+                                    <input type="hidden" name="pledgeId" value="<%= pledge.pledgeId %>">
+                                    <input type="hidden" name="donorId" value="<%= pledge.pledgeId %>">
+                                    <input type="number" name="newAmount" value="<%= pledge.amount %>" min="1" required style="width: 80px;">
+                                    <button type="submit">Update</button>
+                                </form>
+                            <% } %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            <div class="timeline">
+                                <div class="timeline-item <%= pledge.status === 'pending' ? 'active' : '' %>">Pledged</div>
+                                <div class="timeline-bar"></div>
+                                <div class="timeline-item <%= pledge.status === 'allocated' ? 'active' : '' %>">Allocated</div>
+                                <div class="timeline-bar"></div>
+                                <div class="timeline-item <%= pledge.status === 'released' ? 'active' : '' %>">Released</div>
+                                <div class="timeline-bar"></div>
+                                <div class="timeline-item <%= pledge.status === 'distributed' ? 'active' : '' %>">Distributed</div>
+                                <div class="timeline-bar"></div>
+                                <div class="timeline-item <%= pledge.status === 'confirmed' ? 'active' : '' %>">Confirmed</div>
+                            </div>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p>You have no active pledges. Go to the <a href="/donate">donate page</a> to make a pledge!</p>
+    <% } %>
+</body>
+</html>
